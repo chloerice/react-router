@@ -1,14 +1,27 @@
 import React from 'react';
 import Songs from '../components/Songs';
 
-const Album = (props) => {
+class Album extends React.Component {
 
-  const album = props.album;
-  const currentSong = props.currentSong;
-  const isPlaying = props.isPlaying;
-  const toggleOne = props.toggleOne;
+  constructor(props){
+    super(props);
+  }
 
-  return (
+
+  componentDidMount () {
+    const albumId = this.props.routeParams.albumId;
+    const selectAlbum = this.props.selectAlbum;
+
+    selectAlbum(albumId);
+  }
+
+  render(){
+    const album = this.props.album;
+    const currentSong = this.props.currentSong;
+    const isPlaying = this.props.isPlaying;
+    const toggleOne = this.props.toggleOne;
+    // console.log(this.props);
+    return (
     <div className="album">
       <div>
         <h3>{ album.name }</h3>
@@ -20,7 +33,9 @@ const Album = (props) => {
         isPlaying={isPlaying}
         toggleOne={toggleOne} />
     </div>
-  );
+    );
+  }
 }
+
 
 export default Album;
