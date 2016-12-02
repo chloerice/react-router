@@ -58,3 +58,8 @@ footer {
 
 .album img {
   height: 300px; }
+
+.col-xs-4 img {
+  height: 290px;
+  width: 290px;
+}

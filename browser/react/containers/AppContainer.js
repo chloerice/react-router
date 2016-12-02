@@ -22,13 +22,18 @@ export default class AppContainer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
-    this.deselectAlbum = this.deselectAlbum.bind(this);
   }
 
   componentDidMount () {
     axios.get('/api/albums/')
       .then(res => res.data)
-      .then(album => this.onLoad(convertAlbums(album)));
+      .then(album => this.onLoad(convertAlbums(album)))
+      .catch(console.error);
+
+    axios.get('/api/artists')
+      .then(res => res.data)
+      .then(artists => this.setState({artists: artists}))
+      .catch(console.error);
 
     AUDIO.addEventListener('ended', () =>
       this.next());
@@ -36,9 +41,9 @@ export default class AppContainer extends Component {
       this.setProgress(AUDIO.currentTime / AUDIO.duration));
   }
 
-  onLoad (albums) {
+  onLoad (album) {
     this.setState({
-      albums: albums
+      albums: album
     });
   }
 
@@ -95,12 +100,22 @@ export default class AppContainer extends Component {
       .then(res => res.data)
       .then(album => this.setState({
         selectedAlbum: convertAlbum(album)
-      }));
+      }))
+      .catch(console.error);
   }
 
-  deselectAlbum () {
-    this.setState({ selectedAlbum: {}});
+  selectArtist (artistId) {
+    axios.get(`/api/artists/${artistId}`)
+      .then(res => res.data)
+      .then(artist => this.setState({
+        selectedArtist: artist
+      }))
+      .catch(console.error);
   }
+
+  // deselectAlbum () {
+  //   this.setState({ selectedAlbum: {}});
+  // }
 
   render () {
     return (
@@ -110,14 +125,16 @@ export default class AppContainer extends Component {
         </div>
         <div className="col-xs-10">
 
-        {this.props.children ? 
+        {this.props.children ?
           React.cloneElement(this.props.children, {
             album: this.state.selectedAlbum,
             currentSong: this.state.currentSong,
             isPlaying: this.state.isPlaying,
             toggle: this.toggleOne,
+            onLoad: this.onLoad,
 
             albums: this.state.albums,
+            artists: this.state.artists,
             selectAlbum: this.selectAlbum
           }) :
           null
