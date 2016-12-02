@@ -6,7 +6,7 @@ const Songs = (props) => {
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
   const toggle = props.toggleOne;
-  console.log("inside songs: ", songs);
+
 
   return (
     <table className='table'>
@@ -20,11 +20,11 @@ const Songs = (props) => {
       </thead>
       <tbody>
         {
-          songs && songs.map(song => (
+          songs.length && songs.map(song => (
             <tr key={song.id}>
               <td>
                 <button className="btn btn-default btn-xs" onClick={() => toggle(song, songs)}>
-                  <span className={song.id === currentSong.id && isPlaying ? "glyphicon glyphicon-pause" : "glyphicon glyphicon-play"}></span>
+                  <span className={song.id === currentSong.id && isPlaying ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-play'}></span>
                 </button>
               </td>
               <td>{ song.name }</td>

@@ -34,11 +34,11 @@ export default class Artist extends Component {
     console.log("songs inside artist render ", this.props.currentSongList);
     return (
       <div>
-       { artist ? 
+       { artist ?
         (<div>
           <h3>{artist.name}</h3>
           <Albums albums={this.props.albums} />
-          <Songs songs={this.props.currentSongList} />
+          <Songs songs={this.props.currentSongList} currentSong={this.props.currentSong} isPlaying={this.props.isPlaying} toggleOne={this.props.toggle} />
         </div>)
         : null
         }
