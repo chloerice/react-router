@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { convertAlbum, convertAlbums, skip } from '../utils';
+import axios from 'axios';
+import Albums from './Albums';
+import Songs from './Songs';
 
 export default class Artist extends Component {
   constructor(props) {
@@ -10,34 +13,36 @@ export default class Artist extends Component {
     const selectArtist = this.props.selectArtist;
     const artistId = this.props.routeParams.artistId;
 
-    selectArtist(artistId);
+    const gettingArtist = axios.get(`/api/artists/${artistId}`);
+    const gettingAlbums = axios.get(`/api/artists/${artistId}/albums`);
+    const gettingSongs = axios.get(`/api/artists/${artistId}/songs`);
 
-    axios.get(`/api/artists/${artistId}/albums`)
-      .then(res => res.data)
-      .then(albums => this.onLoad(convertAlbums(albums)))
-      .catch(console.error);
+    Promise.all([gettingArtist, gettingAlbums, gettingSongs])
+    .then(res => {
+      const artist = res[0].data;
+      let albums = res[1].data;
+      const songs = res[2].data;
+      albums = convertAlbums(albums);
 
-    axios.get(`/api/artists/${artistId}/songs`)
-      .then(res => res.data)
-      .then(songs => this.setState({
-        currentSongList: songs
-      }))
-      .catch(console.error);
+      this.props.artistOnLoad(artist, albums, songs);
+    })
+    .catch(console.error);
   }
 
   render() {
-
     const artist = this.props.selectedArtist;
-    console.log(artist);
+    console.log("songs inside artist render ", this.props.currentSongList);
     return (
-      { this.props.selectedArtist ?
-          <div>
-            <h3>{artist.name}</h3>
-            <h4>ALBUMS</h4>
-            <h4>SONGS</h4>
-          </div>
-         : null
-      }
-    )
+      <div>
+       { artist ? 
+        (<div>
+          <h3>{artist.name}</h3>
+          <Albums albums={this.props.albums} />
+          <Songs songs={this.props.currentSongList} />
+        </div>)
+        : null
+        }
+      </div>
+      )
   }
 }

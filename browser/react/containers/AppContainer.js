@@ -22,6 +22,7 @@ export default class AppContainer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
+    this.artistOnLoad = this.artistOnLoad.bind(this);
   }
 
   componentDidMount () {
@@ -45,6 +46,14 @@ export default class AppContainer extends Component {
     this.setState({
       albums: album
     });
+  }
+
+  artistOnLoad(artist, albums, songs){
+    this.setState({
+      selectedArtist: artist,
+      albums: albums,
+      currentSongList: songs
+    })
   }
 
   play () {
@@ -131,11 +140,12 @@ export default class AppContainer extends Component {
             currentSong: this.state.currentSong,
             isPlaying: this.state.isPlaying,
             toggle: this.toggleOne,
-            onLoad: this.onLoad,
-
+            artistOnLoad: this.artistOnLoad,
+            selectedArtist: this.state.selectedArtist,
             albums: this.state.albums,
             artists: this.state.artists,
-            selectAlbum: this.selectAlbum
+            selectAlbum: this.selectAlbum,
+            currentSongList: this.state.currentSongList
           }) :
           null
         }
