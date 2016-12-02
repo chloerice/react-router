@@ -30,19 +30,24 @@ export default class Artist extends Component {
   }
 
   render() {
-    const artist = this.props.selectedArtist;
-    console.log("songs inside artist render ", this.props.currentSongList);
-    return (
-      <div>
-       { artist ?
-        (<div>
-          <h3>{artist.name}</h3>
-          <Albums albums={this.props.albums} />
-          <Songs songs={this.props.currentSongList} currentSong={this.props.currentSong} isPlaying={this.props.isPlaying} toggleOne={this.props.toggle} />
-        </div>)
-        : null
-        }
-      </div>
-      )
+    const selectedArtist = this.props.selectedArtist;
+    const children = this.props.children;
+    const propsToPassToChildren = {
+      /**todo: make sure to include all the props that the child components need! **/
+      albums: this.props.albums,
+      songs: this.props.currentSongList,
+      currentSong: this.props.currentSong,
+      isPlaying: this.props.isPlaying,
+      toggleOne: this.props.toggle
+    }
+
+    return <div>
+      <h3>{ selectedArtist.name }</h3>
+      <ul className="nav nav-tabs">
+        <li><Link to={`/api/artists/${artistId}/albums`}>ALBUMS</Link></li>
+        <li><Link to={`/api/artists/${artistId}/songs`}>SONGS</Link></li>
+      </ul>
+      { children && React.cloneElement(children, propsToPassToChildren) }
+    </div>
   }
 }
